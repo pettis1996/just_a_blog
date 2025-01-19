@@ -14,10 +14,12 @@ export default function AdminDashboard() {
     const [title, setTitle] = useState("");
     const [excerpt, setExcerpt] = useState("");
     const [content, setContent] = useState("");
-    const [author, setAuthor] = useState(""); // Add author input
+    const [author, setAuthor] = useState("");
     const [date, setDate] = useState("");
     const { data: session } = useSession();
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    const [postData, setPostData] = useState([]);
 
     console.log(session?.user?.email)
     console.log(process.env.ADMIN_EMAIL);
@@ -29,13 +31,32 @@ export default function AdminDashboard() {
         }
     }, [session, router]);
 
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const res = await fetch("/api/posts");
+                const { data, error } = await res.json();
+
+                if (error) {
+                    throw new Error(error);
+                }
+
+                setPostData(data);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPosts();
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const newPost = {
             title,
             content,
-            author: author || session?.user?.name || "Admin", // Use the session user's name as a fallback
+            author: author || session?.user?.name || "Admin",
             excerpt,
             created_at: date || new Date().toISOString(),
         };
@@ -65,6 +86,10 @@ export default function AdminDashboard() {
             console.error("Failed to create post:", err);
         }
     };
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
 
     return (
         <div className="space-y-6">
@@ -138,14 +163,21 @@ export default function AdminDashboard() {
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                                {/* Add your stats-related content here */}
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">1,234</div>
                                 <p className="text-xs text-muted-foreground">+20.1% from last month</p>
                             </CardContent>
                         </Card>
-                        {/* Add more stats cards as needed */}
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{postData.length}</div>
+                                <p className="text-xs text-muted-foreground">{postData.length} Total Posts on this blog so far...</p>
+                            </CardContent>
+                        </Card>
                     </div>
                 </TabsContent>
             </Tabs>
