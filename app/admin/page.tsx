@@ -160,7 +160,7 @@ export default function AdminDashboard() {
                 </TabsContent>
                 <TabsContent value="stats">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <Card>
+                        <Card className="hover:bg-white hover:text-black hover:cursor-pointer">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                             </CardHeader>
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
                                 <p className="text-xs text-muted-foreground">+20.1% from last month</p>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className="hover:bg-white hover:text-black hover:cursor-pointer">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
                             </CardHeader>
