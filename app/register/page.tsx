@@ -16,9 +16,7 @@ export default function Login() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        // Here you would typically send a request to your backend to authenticate the user
         console.log("Logging in user:", username)
-        // For this example, we'll just redirect to the admin dashboard
         router.push("/admin")
     }
 

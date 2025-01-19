@@ -16,7 +16,7 @@ export default function Login() {
 
     useEffect(() => {
         if (status === "authenticated") {
-            router.push("/admin")
+            router.push("/")
         }
     }, [status, router])
 
@@ -27,7 +27,7 @@ export default function Login() {
     }
 
     const handleGoogleSignIn = () => {
-        signIn("google", { callbackUrl: "/admin" })
+        signIn("google", { callbackUrl: "/" })
     }
 
     if (status === "loading") {
