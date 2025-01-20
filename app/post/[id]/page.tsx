@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Define the structure of the post object
 interface Post {
     id: number;
     title: string;
@@ -15,7 +14,7 @@ interface Post {
 export default function PostPage() {
     const params = useParams();
     const postId = params?.id;
-    const [post, setPost] = useState<Post | null>(null); // Using the Post type
+    const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +27,7 @@ export default function PostPage() {
                 if (!response.ok) {
                     throw new Error(`Error fetching post: ${response.statusText}`);
                 }
-                const data: Post = await response.json(); // Type the response as Post
+                const data: Post = await response.json();
                 setPost(data);
             } catch (err: unknown) {
                 if (err instanceof Error) {
