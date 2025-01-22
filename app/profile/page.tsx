@@ -15,8 +15,6 @@ export default function Profile() {
     const { data: session, status } = useSession();
     const userData = session?.user;
 
-    console.log("userData", userData)
-
     const handleSubmit = () => {
         return null;
     }
@@ -26,17 +24,17 @@ export default function Profile() {
             <h2 className="text-3xl font-bold">My Profile</h2>
             <div className="space-y-4">
                 <Card>
-                    <CardContent className="py-10 flex gap-5">
+                    <CardContent className="py-10 flex gap-5 items-center">
                         <Image
                             src={userData?.image ?? "/globe.svg"}
                             alt="User Avatar"
-                            width={150} 
-                            height={150}
-                            className="rounded-2xl shadow-md"
+                            width={100} 
+                            height={100}
+                            className="rounded-full shadow-md"
                         />
                         <div className="flex flex-col gap-5">
-                            <p className="text-3xl font-bold">{userData?.name}</p>
-                            <p className="text-2xl font-medium">{userData?.email}</p>
+                            <p className="text-2xl font-bold">{userData?.name}</p>
+                            <p className="text-xl font-medium">{userData?.email}</p>
                         </div>
                     </CardContent>
                 </Card>

@@ -1,5 +1,4 @@
 "use client";
-
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,7 +38,26 @@ export default function PostPage() {
             }
         };
 
+        const fetchComments = async () => {
+            try {
+                const response = await fetch(`/api/comments?postId=${postId}`);
+                if (!response.ok) {
+                    throw new Error(`Error fetching post: ${response.statusText}`);
+                }
+                const data = await response.json();
+                console.log("data comments", data)
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                } else {
+                    setError("An unknown error occurred");
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchPost();
+        fetchComments();
     }, [postId]);
 
     if (loading) {

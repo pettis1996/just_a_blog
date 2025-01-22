@@ -1,15 +1,15 @@
 import { supabase } from "../../lib/supabase";
 
-export default async function CommentsHandler(req, res) {
+export default async function handler(req, res) {
     if (req.method === "GET") {
-        const { postId } = req.body;
+        const { postId } = req.query;
 
         const { data, error } = await supabase
             .from("comments")
             .select("id, content, created_at, user_id")
             .eq("post_id", postId)
             .order("created_at", { ascending: true });
-
+            
         if (error) {
             return res.status(500).json({ error: error.message });
         }
