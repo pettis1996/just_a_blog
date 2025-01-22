@@ -10,10 +10,19 @@ interface Post {
     created_at: string;
 }
 
+interface Comments {
+    id: string;
+    post_id: string;
+    user_id: string;
+    content: string;
+    created_at: string;
+}
+
 export default function PostPage() {
     const params = useParams();
     const postId = params?.id;
     const [post, setPost] = useState<Post | null>(null);
+    const [comments, setComments] = useState<Comments[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +54,7 @@ export default function PostPage() {
                     throw new Error(`Error fetching post: ${response.statusText}`);
                 }
                 const data = await response.json();
-                console.log("data comments", data)
+                setComments(data.data)
             } catch (err: unknown) {
                 if (err instanceof Error) {
                 } else {
@@ -73,14 +82,34 @@ export default function PostPage() {
     }
 
     return (
-        <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-                <CardTitle className="text-3xl">{post.title}</CardTitle>
-                <CardDescription>{new Date(post.created_at).toLocaleDateString()}</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <p className="leading-relaxed">{post.content}</p>
-            </CardContent>
-        </Card>
+        <>
+            <Card className="max-w-2xl mx-auto mb-5">
+                <CardHeader>
+                    <CardTitle className="text-3xl">{post.title}</CardTitle>
+                    <CardDescription>{new Date(post.created_at).toLocaleDateString()}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="leading-relaxed">{post.content}</p>
+                </CardContent>
+            </Card>
+            <Card className="max-w-2xl mx-auto">
+                {comments?.length ? (
+                    comments.map((comment: Comments, index: number) => {
+                        return (
+                            <div key={index}>
+                                <CardHeader>
+                                    <CardDescription>{new Date(comment.created_at).toLocaleDateString()}</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="leading-relaxed">{comment.content}</p>
+                                </CardContent>
+                            </div>
+                        );
+                    })
+                ) : (
+                    <p>No comments yet.</p> 
+                )}
+            </Card>
+        </>
     );
 }
