@@ -21,6 +21,9 @@ interface Comments {
 export default function PostPage() {
     const params = useParams();
     const postId = params?.id;
+    const [userId, setUserId] = useState("");
+    const [commentDate, setCommentDate] = useState("");
+    const [commentContent, setCommentContent] = useState("");
     const [post, setPost] = useState<Post | null>(null);
     const [comments, setComments] = useState<Comments[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -69,6 +72,40 @@ export default function PostPage() {
         fetchComments();
     }, [postId]);
 
+    const postComment = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const newComment = {
+            user_id: userId,
+            post_id: postId,
+            content: commentContent,
+            created_at: commentDate || new Date().toISOString(),
+        }
+
+        try {
+            const res = await fetch("/api/comments", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newComment),
+            });
+
+            const result = await res.json();
+
+            if (res.ok) {
+                console.log("Comment added successfully:", result.data);
+                setUserId("");
+                setCommentDate("");
+                setCommentContent("");
+            } else {
+                console.error("Error creating post:", result.error);
+            }
+        } catch (err) {
+            console.error("Failed to create post:", err);
+        }
+    }
+
     if (loading) {
         return <div className="text-center text-2xl mt-8">Loading...</div>;
     }
@@ -108,7 +145,7 @@ export default function PostPage() {
                             );
                         })}
                         <CardContent className="mt-5">
-                            <form onSubmit={(e) => {}} className="space-y-4">
+                            <form onSubmit={postComment} className="space-y-4">
                                 <div>
                                     <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
                                         Write your comment
@@ -127,11 +164,9 @@ export default function PostPage() {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        Post Comment
-                                    </button>
-                                </div>
+                                <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Post Comment
+                                </button>
                             </form>
                         </CardContent>
                     </>
