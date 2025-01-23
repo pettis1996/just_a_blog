@@ -83,7 +83,7 @@ export default function PostPage() {
 
     return (
         <>
-            <Card className="max-w-2xl mx-auto mb-5">
+            <Card className="max-w-5xl mx-auto mb-5">
                 <CardHeader>
                     <CardTitle className="text-3xl">{post.title}</CardTitle>
                     <CardDescription>{new Date(post.created_at).toLocaleDateString()}</CardDescription>
@@ -92,22 +92,87 @@ export default function PostPage() {
                     <p className="leading-relaxed">{post.content}</p>
                 </CardContent>
             </Card>
-            <Card className="max-w-2xl mx-auto">
+            <Card className="max-w-3xl mx-auto">
                 {comments?.length ? (
-                    comments.map((comment: Comments, index: number) => {
-                        return (
-                            <div key={index}>
-                                <CardHeader>
-                                    <CardDescription>{new Date(comment.created_at).toLocaleDateString()}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="leading-relaxed">{comment.content}</p>
-                                </CardContent>
-                            </div>
-                        );
-                    })
+                    <>
+                        {comments.map((comment: Comments, index: number) => {
+                            return (
+                                <div key={index}>
+                                    <CardHeader>
+                                        <CardDescription>{new Date(comment.created_at).toLocaleDateString()}</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="leading-relaxed">{comment.content}</p>
+                                    </CardContent>
+                                </div>
+                            );
+                        })}
+                        <CardContent className="mt-5">
+                            <form onSubmit={(e) => {}} className="space-y-4">
+                                <div>
+                                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Write your comment
+                                    </label>
+                                    <textarea
+                                        id="comment"
+                                        name="comment"
+                                        rows={4}
+                                        maxLength={500} 
+                                        placeholder="Write something thoughtful..."
+                                        className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                                        required
+                                    ></textarea>
+                                    <div className="mt-2 text-sm text-gray-500">
+                                        <span id="char-count">0</span>/500 characters
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Post Comment
+                                    </button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </>
                 ) : (
-                    <p>No comments yet.</p> 
+                    <Card className="max-w-3xl mx-auto">
+                        <CardHeader>
+                            <CardTitle>
+                                No comments on this post yet!
+                            </CardTitle>
+                            <CardDescription>
+                                Be the first to comment now.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={(e) => {}} className="space-y-4">
+                                <div>
+                                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Write your comment
+                                    </label>
+                                    <textarea
+                                        id="comment"
+                                        name="comment"
+                                        rows={4}
+                                        maxLength={500} 
+                                        placeholder="Write something thoughtful..."
+                                        className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                                        required
+                                    ></textarea>
+                                    <div className="mt-2 text-sm text-gray-500">
+                                        <span id="char-count">0</span>/500 characters
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Post Comment
+                                    </button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
                 )}
             </Card>
         </>
