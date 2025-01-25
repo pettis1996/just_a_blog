@@ -14,7 +14,7 @@ export default function Login() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+    
         try {
             const response = await fetch("/api/login", {
                 method: "POST",
@@ -23,14 +23,14 @@ export default function Login() {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
+    
             const result = await response.json();
+    
             if (!response.ok) {
                 setError(result.error || "An error occurred");
                 return;
             }
-
-            console.log("Login successful:", result);
+    
             router.push("/admin");
         } catch (err) {
             setError("An error occurred during login.");

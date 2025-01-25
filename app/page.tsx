@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,28 +8,49 @@ import { Button } from "@/components/ui/button";
 
 type Post = { id: number, title: string, content: string, author: string, created_at: string, excerpt: string };
 export default function Home() {
-  const [posts, setPosts] = useState([]);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch("/api/posts");
-        const { data, error } = await res.json();
+      const checkAuth = async () => {
+          try {
+              const res = await fetch("/api/auth/check", { credentials: "include" });
 
-        if (error) {
-          throw new Error(error);
-        }
+              if (res.ok) {
+                  setIsAuthenticated(true);
+              } else {
+                  setIsAuthenticated(false);
+              }
+          } catch {
+              setIsAuthenticated(false);
+          }
+      };
 
-        setPosts(data);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
+      checkAuth();
   }, []);
+
+  useEffect(() => {
+      const fetchPosts = async () => {
+          if (!isAuthenticated) return;
+
+          try {
+              const res = await fetch("/api/posts");
+              const { data } = await res.json();
+              setPosts(data);
+          } finally {
+              setLoading(false);
+          }
+      };
+
+      fetchPosts();
+  }, [isAuthenticated]);
+
+  if (!isAuthenticated) {
+      return <p>Please log in to view posts.</p>;
+  }
+
 
   return (
     <div className="space-y-8">
