@@ -1,12 +1,11 @@
 'use client';
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "./mode-toggle";
 import { signOut } from "next-auth/react";
 
 export default function Navbar() {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // null: still loading
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); 
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -26,6 +25,22 @@ export default function Navbar() {
         checkAuth();
     }, []);
 
+    const handleLogout = async () => {
+        await signOut();
+        
+        try {
+            const res = await fetch("/api/auth/logout", { method: "POST" });
+
+            if (res.ok) {
+                setIsAuthenticated(false);
+            } else {
+                console.error("Logout failed");
+            }
+        } catch (error) {
+            console.error("An error occurred while logging out", error);
+        }
+    };
+
     return (
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 className="text-2xl font-bold">Just a Blog</h1>
@@ -41,10 +56,7 @@ export default function Navbar() {
                         <Link href="/profile" className="hover:underline">Profile</Link>
                         <Link href="/admin" className="hover:underline">Admin Panel</Link>
                         <button 
-                            onClick={async () => {
-                                await signOut(); // Log the user out via next-auth
-                                setIsAuthenticated(false); // Update the state
-                            }}
+                            onClick={handleLogout}
                             className="text-red-600 hover:text-red-700 hover:underline"
                         >
                             Logout
