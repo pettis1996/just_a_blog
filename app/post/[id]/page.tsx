@@ -181,7 +181,7 @@ export default function PostPage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={(e) => {}} className="space-y-4">
+                            <form onSubmit={postComment} className="space-y-4">
                                 <div>
                                     <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
                                         Write your comment

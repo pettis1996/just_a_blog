@@ -1,42 +1,41 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { signIn, useSession } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Login() {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const router = useRouter()
-    const { status } = useSession()
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
-    useEffect(() => {
-        if (status === "authenticated") {
-            router.push("/")
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                setError(result.error || "An error occurred");
+                return;
+            }
+
+            console.log("Login successful:", result);
+            router.push("/admin");
+        } catch (err) {
+            setError("An error occurred during login.");
         }
-    }, [status, router])
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        console.log("Logging in user:", username)
-        router.push("/admin")
-    }
-
-    const handleGoogleSignIn = () => {
-        signIn("google", { callbackUrl: "/" })
-    }
-
-    if (status === "loading") {
-        return <div>Loading...</div>
-    }
-
-    if (status === "authenticated") {
-        return null
-    }
+    };
 
     return (
         <Card className="max-w-md mx-auto">
@@ -46,13 +45,14 @@ export default function Login() {
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {error && <p className="text-red-500 text-sm">{error}</p>}
                     <div className="space-y-2">
-                        <Label htmlFor="username">Username</Label>
+                        <Label htmlFor="email">Email</Label>
                         <Input
-                            id="username"
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
@@ -68,10 +68,7 @@ export default function Login() {
                     </div>
                     <Button type="submit" className="w-full">Login</Button>
                 </form>
-                <div className="mt-4">
-                    <Button onClick={handleGoogleSignIn} className="w-full">Sign in with Google</Button>
-                </div>
             </CardContent>
         </Card>
-    )
+    );
 }
