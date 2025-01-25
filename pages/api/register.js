@@ -10,13 +10,11 @@ export default async function handler(req, res) {
         }
 
         try {
-            // Hash the password
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-            // Store user in the database
             const { data, error } = await supabase
-                .from("users") // Make sure your `users` table exists
+                .from("users") 
                 .insert([{ email, password: hashedPassword }]);
 
             if (error) {

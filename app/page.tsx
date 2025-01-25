@@ -23,7 +23,7 @@ export default function Home() {
           throw new Error(error);
         }
 
-        setPosts(data); // Set fetched posts
+        setPosts(data);
       } finally {
         setLoading(false);
       }
@@ -32,7 +32,6 @@ export default function Home() {
     fetchPosts();
   }, []);
 
-  // Render loading, error, or posts content
   return (
     <div className="space-y-8">
       <h2 className="text-3xl font-bold mb-6">Latest Posts</h2>

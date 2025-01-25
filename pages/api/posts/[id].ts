@@ -1,13 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "@/lib/supabase";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
-  // Ensure `id` is a string
   if (!id || typeof id !== "string") {
     return res.status(400).json({ error: "Invalid or missing ID parameter." });
   }

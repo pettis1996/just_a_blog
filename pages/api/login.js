@@ -10,7 +10,6 @@ export default async function handler(req, res) {
         }
 
         try {
-            // Fetch user from the database
             const { data: users, error } = await supabase
                 .from("users")
                 .select("*")
@@ -22,13 +21,11 @@ export default async function handler(req, res) {
 
             const user = users[0];
 
-            // Compare passwords
             const isValidPassword = await bcrypt.compare(password, user.password);
             if (!isValidPassword) {
                 return res.status(401).json({ error: "Invalid email or password." });
             }
 
-            // Login successful
             return res.status(200).json({ message: "Login successful.", user });
         } catch (error) {
             return res.status(500).json({ error: "Something went wrong during login." });
