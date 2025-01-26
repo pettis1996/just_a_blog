@@ -33,8 +33,6 @@ export default function Home() {
 
   useEffect(() => {
       const fetchPosts = async () => {
-          if (!isAuthenticated) return;
-
           try {
               const res = await fetch("/api/posts");
               const { data } = await res.json();
@@ -46,11 +44,6 @@ export default function Home() {
 
       fetchPosts();
   }, [isAuthenticated]);
-
-  if (!isAuthenticated) {
-      return <p>Please log in to view posts.</p>;
-  }
-
 
   return (
     <div className="space-y-8">

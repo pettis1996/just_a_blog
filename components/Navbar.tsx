@@ -2,18 +2,26 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "./mode-toggle";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); 
+    const { data: session, status } = useSession(); 
 
     useEffect(() => {
+        if (status === "loading") return; 
+
+        if (status === "authenticated") {
+            setIsAuthenticated(true);
+            return; 
+        }
+
         const checkAuth = async () => {
             try {
                 const res = await fetch("/api/auth/check", { credentials: "include" });
-  
+
                 if (res.ok) {
-                    setIsAuthenticated(true);
+                    setIsAuthenticated(true); 
                 } else {
                     setIsAuthenticated(false);
                 }
@@ -21,13 +29,13 @@ export default function Navbar() {
                 setIsAuthenticated(false);
             }
         };
-  
+
         checkAuth();
-    }, []);
+    }, [status]);
 
     const handleLogout = async () => {
-        await signOut();
-        
+        await signOut({ callbackUrl: "/" });
+
         try {
             const res = await fetch("/api/auth/logout", { method: "POST" });
 

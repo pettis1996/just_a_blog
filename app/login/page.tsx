@@ -1,10 +1,11 @@
-"use client";
+'use client';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export default function Login() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-    
+
         try {
             const response = await fetch("/api/login", {
                 method: "POST",
@@ -23,18 +24,22 @@ export default function Login() {
                 },
                 body: JSON.stringify({ email, password }),
             });
-    
+
             const result = await response.json();
-    
+
             if (!response.ok) {
                 setError(result.error || "An error occurred");
                 return;
             }
-    
+
             router.push("/admin");
         } catch (err) {
             setError("An error occurred during login.");
         }
+    };
+
+    const handleGoogleLogin = () => {
+        signIn("google", { callbackUrl: "/admin" }); // Redirect to the admin page after login
     };
 
     return (
@@ -68,6 +73,11 @@ export default function Login() {
                     </div>
                     <Button type="submit" className="w-full">Login</Button>
                 </form>
+                <div className="mt-4 flex items-center justify-center">
+                    <Button onClick={handleGoogleLogin} className="w-full" variant="outline">
+                        Login with Google
+                    </Button>
+                </div>
             </CardContent>
         </Card>
     );
