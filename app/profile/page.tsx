@@ -12,7 +12,7 @@ export default function Profile() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const userData = session?.user;
 
     const handleSubmit = () => {
@@ -26,7 +26,7 @@ export default function Profile() {
                 <Card>
                     <CardContent className="py-10 flex gap-5 items-center">
                         <Image
-                            src={userData?.image ?? "/globe.svg"}
+                            src={userData?.image ?? "/avatar.svg"}
                             alt="User Avatar"
                             width={100} 
                             height={100}

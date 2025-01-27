@@ -14,7 +14,7 @@ export function middleware(req: NextRequest) {
     jwt.verify(token, JWT_SECRET); 
     return NextResponse.next(); 
   } catch (error) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: error || "Unauthorized" }, { status: 401 });
   }
 }
 

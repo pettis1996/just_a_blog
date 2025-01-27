@@ -34,12 +34,12 @@ export default function Login() {
 
             router.push("/admin");
         } catch (err) {
-            setError("An error occurred during login.");
+            setError(`An error occurred during login: ${err}`);
         }
     };
 
     const handleGoogleLogin = () => {
-        signIn("google", { callbackUrl: "/admin" }); // Redirect to the admin page after login
+        signIn("google", { callbackUrl: "/admin" }); 
     };
 
     return (

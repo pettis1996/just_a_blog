@@ -32,6 +32,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    
+  })
+
+  useEffect(() => {
       const fetchPosts = async () => {
           try {
               const res = await fetch("/api/posts");
