@@ -12,27 +12,41 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState("pettis_paris@hotmail.com");
 
   useEffect(() => {
-      const checkAuth = async () => {
-          try {
-              const res = await fetch("/api/auth/check", { credentials: "include" });
+    const checkAuth = async () => {
+        try {
+            const res = await fetch("/api/auth/check", { credentials: "include" });
 
-              if (res.ok) {
-                  setIsAuthenticated(true);
-              } else {
-                  setIsAuthenticated(false);
-              }
-          } catch {
-              setIsAuthenticated(false);
-          }
-      };
+            if (res.ok) {
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+            }
+        } catch {
+            setIsAuthenticated(false);
+        }
+    };
 
-      checkAuth();
+    checkAuth();
   }, []);
 
   useEffect(() => {
-    
+    const getUserData = async () => { 
+      try {
+        const res = await fetch(`/api/users?email=${userEmail}`);
+        const { data } = await res.json();
+        console.log("data", data)
+      } catch(error) {
+        return error;
+      }
+    };
+
+    if (isAuthenticated) {
+      getUserData();
+      setUserEmail("");
+    }
   })
 
   useEffect(() => {

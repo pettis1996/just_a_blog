@@ -13,6 +13,6 @@ export default function handler(req, res) {
         jwt.verify(token, JWT_SECRET); 
         return res.status(200).json({ message: "Authenticated" });
     } catch (error) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return res.status(401).json({ error: error || "Unauthorized" });
     }
 }
