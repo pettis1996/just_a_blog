@@ -12,6 +12,8 @@ import { useUser } from "@/providers/UserContext";
 export default function Profile() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [website, setWebsite] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const { data: session } = useSession();
     const [userData, setUserData] = useState(session?.user);
@@ -63,14 +65,14 @@ export default function Profile() {
                             <CardDescription>Manage and edit your profile`s personal settings</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <Label htmlFor="title">Username [Showing]</Label>
+                                    <Label htmlFor="title">Nickname [Showing]</Label>
                                     <Input
                                         id="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
-                                        required
+                                        type="text"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -79,7 +81,25 @@ export default function Profile() {
                                         id="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        required
+                                        type="email"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="title">Personal Website</Label>
+                                    <Input
+                                        id="website"
+                                        value={website}
+                                        onChange={(e) => setWebsite(e.target.value)}
+                                        type="text"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="title">Phone Number</Label>
+                                    <Input
+                                        id="phone_num"
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                        type="text"
                                     />
                                 </div>
                                 <Button type="submit">Save Settings</Button>
@@ -94,7 +114,7 @@ export default function Profile() {
                             <CardDescription>Manage and edit your profile`s personal settings</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="title">Password</Label>
                                     <Input
@@ -102,6 +122,15 @@ export default function Profile() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="title">Email</Label>
+                                    <Input
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        type="email"
                                     />
                                 </div>
                                 <Button type="submit">Save Settings</Button>
