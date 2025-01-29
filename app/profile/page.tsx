@@ -5,20 +5,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from 'next/image';
+import { useUser } from "@/providers/UserContext";
 
 export default function Profile() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const { data: session } = useSession();
-    const userData = session?.user;
+    const [userData, setUserData] = useState(session?.user);
+    const { user, loading } = useUser();
 
     const handleSubmit = () => {
         return null;
     }
 
+    useEffect(() => {
+        if (!user) return;
+        setUserData(user);
+    }, [user])
+
+    if (loading) {
+        return <>Loading...</>;
+    }
+    
     return (
         <div className="space-y-6">
             <h2 className="text-3xl font-bold">My Profile</h2>

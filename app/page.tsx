@@ -47,7 +47,7 @@ export default function Home() {
       getUserData();
       setUserEmail("");
     }
-  })
+  }, [isAuthenticated, userEmail]);
 
   useEffect(() => {
       const fetchPosts = async () => {

@@ -21,18 +21,23 @@ export default async function handler(req, res) {
     }
 
     const { data, error } = await supabase
-      .from('users') // Ensure you use the correct table name
+      .from('users') 
       .select('*')
       .eq('email', email)
       .single();
 
-    console.log(data);
-
     if (error) {
       return res.status(500).json({ error: error.message });
     }
+    
+    const customData = {
+      email: data.email,
+      name: data.nickname,
+      website: data.website,
+      phone_num: data.phone_num
+    }
 
-    return res.status(200).json({ user: data });
+    return res.status(200).json({ user: customData });
   }
 
   res.status(405).send('Method Not Allowed');
