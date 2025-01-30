@@ -1,51 +1,37 @@
-'use client';
+"use client";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "./mode-toggle";
-import { signOut, useSession } from "next-auth/react";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); 
-    const { data: session, status } = useSession(); 
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
-        if (status === "loading") return; 
-
-        if (status === "authenticated") {
-            setIsAuthenticated(true);
-            return; 
-        }
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            setIsAuthenticated(!!session);
+        });
 
         const checkAuth = async () => {
-            try {
-                const res = await fetch("/api/auth/check", { credentials: "include" });
-
-                if (res.ok) {
-                    setIsAuthenticated(true); 
-                } else {
-                    setIsAuthenticated(false);
-                }
-            } catch {
-                setIsAuthenticated(false);
-            }
+            const { data: { user } } = await supabase.auth.getUser();
+            setIsAuthenticated(!!user);
         };
 
         checkAuth();
-    }, [status]);
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     const handleLogout = async () => {
-        await signOut({ callbackUrl: "/" });
-
-        try {
-            const res = await fetch("/api/auth/logout", { method: "POST" });
-
-            if (res.ok) {
-                setIsAuthenticated(false);
-            } else {
-                console.error("Logout failed");
-            }
-        } catch (error) {
-            console.error("An error occurred while logging out", error);
+        const { error } = await supabase.auth.signOut();
+        if (!error) {
+            setIsAuthenticated(false);
+            router.push("/");
+        } else {
+            console.error("Logout failed", error);
         }
     };
 

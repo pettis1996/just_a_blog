@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function AdminDashboard() {
     const [title, setTitle] = useState("");
@@ -16,20 +16,21 @@ export default function AdminDashboard() {
     const [content, setContent] = useState("");
     const [author, setAuthor] = useState("");
     const [date, setDate] = useState("");
-    const { data: session } = useSession();
-    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [postData, setPostData] = useState([]);
-
-    console.log(session?.user?.email)
-    console.log(process.env.ADMIN_EMAIL);
+    const router = useRouter();
 
     useEffect(() => {
-        // TODO: Fix this to get from .env file
-        if (session?.user?.email !== "pettisparis@gmail.com") {
-            router.push("/");
-        }
-    }, [session, router]);
+        const checkAuth = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+
+            if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+                router.push("/");
+            }
+        };
+
+        checkAuth();
+    }, [router]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -56,7 +57,7 @@ export default function AdminDashboard() {
         const newPost = {
             title,
             content,
-            author: author || session?.user?.name || "Admin",
+            author: author || "Admin",
             excerpt,
             created_at: date || new Date().toISOString(),
         };

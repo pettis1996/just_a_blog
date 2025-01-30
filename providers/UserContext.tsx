@@ -1,12 +1,18 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { supabase } from "@/lib/supabase";
 
 type User = {
     email: string;
     name: string;
     website?: string;
     phone_num?: string;
+    avatar_url?: string;
 };
+
+type Session = {
+    email: string;
+}
 
 interface UserContextType {
     user: User | null;
@@ -18,30 +24,65 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const [userEmail, setUserEmail] = useState("pettis_paris@hotmail.com");
+    const [session, setSession] = useState<Session | null>(null);
+
+    console.log(session?.email);   
 
     useEffect(() => {
-        if (!userEmail) return;
-        const fetchUserData = async () => {
-            try {
-                const res = await fetch(`/api/users?email=${encodeURIComponent(userEmail)}`);
-                if (res.ok) {
-                    const { user: data } = await res.json();
-                    setUser(data);
+        const fetchSession = async () => {
+            const { data: sessionData } = await supabase.auth.getSession();
+            if (sessionData?.session?.user) {
+                await fetchUserData(sessionData.session.user.id);
+                setSession(sessionData?.session.user as Session);
+            } else {
+                setLoading(false);
+            }
+        };
+
+        fetchSession();
+
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+            async (_event, session) => {
+                if (session?.user) {
+                    await fetchUserData(session.user.id);
                 } else {
                     setUser(null);
                 }
-            } catch (error) {
-                console.log("Error fetching user:", error);
-                setUser(null);
-            } finally {
                 setLoading(false);
             }
-            setUserEmail("");
+        );
+
+        return () => {
+            authListener?.subscription.unsubscribe();
         };
-    
-        fetchUserData();
-    }, [userEmail]);    
+    }, []);
+
+    const fetchUserData = async (userId: string) => {
+        try {
+            const { data, error } = await supabase
+                .from("users")
+                .select("nickname, phone_num, website, avatar_url")
+                .eq("id", userId)
+                .single();
+
+            if (error) {
+                console.error("Error fetching user data:", error.message);
+                setUser(null);
+            } else {
+                setUser({
+                    email: session?.email || "",
+                    name: data.nickname || "",
+                    website: data.website || "",
+                    phone_num: data.phone_num || "",
+                    avatar_url: data.avatar_url || "",
+                });
+                console.log(user);
+            }
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+            setUser(null);
+        }
+    };
 
     return (
         <UserContext.Provider value={{ user, loading }}>

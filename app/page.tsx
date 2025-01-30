@@ -5,72 +5,48 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { supabase } from '@/lib/supabase'; 
 
 type Post = { id: number, title: string, content: string, author: string, created_at: string, excerpt: string };
+
 export default function Home() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userEmail, setUserEmail] = useState("pettis_paris@hotmail.com");
+  const [userEmail, setUserEmail] = useState("");
+
+  console.log(userEmail)
 
   useEffect(() => {
     const checkAuth = async () => {
-        try {
-            const res = await fetch("/api/auth/check", { credentials: "include" });
-
-            if (res.ok) {
-                setIsAuthenticated(true);
-            } else {
-                setIsAuthenticated(false);
-            }
-        } catch {
-            setIsAuthenticated(false);
-        }
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+      if (user) setUserEmail(user.email || "");
     };
 
     checkAuth();
   }, []);
 
   useEffect(() => {
-    const getUserData = async () => { 
+    const fetchPosts = async () => {
       try {
-        const res = await fetch(`/api/users?email=${userEmail}`);
+        const res = await fetch("/api/posts");
         const { data } = await res.json();
-        console.log("data", data)
-      } catch(error) {
-        return error;
+        setPosts(data);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (isAuthenticated) {
-      getUserData();
-      setUserEmail("");
-    }
-  }, [isAuthenticated, userEmail]);
-
-  useEffect(() => {
-      const fetchPosts = async () => {
-          try {
-              const res = await fetch("/api/posts");
-              const { data } = await res.json();
-              setPosts(data);
-          } finally {
-              setLoading(false);
-          }
-      };
-
-      fetchPosts();
+    fetchPosts();
   }, [isAuthenticated]);
 
   return (
     <div className="space-y-8">
       <h2 className="text-3xl font-bold mb-6">Latest Posts</h2>
-
       {loading && <p>Loading posts...</p>}
-
       {!loading && posts.length === 0 && <p>No posts available.</p>}
-
       {posts.map((post: Post) => (
         <Card key={post.id} className="overflow-hidden">
           <CardHeader>
