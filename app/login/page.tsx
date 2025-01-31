@@ -1,18 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
+import { useUser } from "@/providers/UserContext";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const { user, loading } = useUser();
+    
+    useEffect(() => {
+        if (user) {
+            router.push("/admin");
+        };
+    }, [user, router])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -50,6 +58,10 @@ export default function Login() {
             setError(`Google login error: ${err}`);
         }
     };
+
+    if (loading) {
+        return <>Loading...</>;
+    }
 
     return (
         <Card className="max-w-md mx-auto">
