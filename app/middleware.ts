@@ -11,13 +11,13 @@ export function middleware(req: NextRequest) {
   }
 
   try {
-    jwt.verify(token, JWT_SECRET); 
-    return NextResponse.next(); 
+    jwt.verify(token, JWT_SECRET);
+    return NextResponse.next();
   } catch (error) {
     return NextResponse.json({ error: error || "Unauthorized" }, { status: 401 });
   }
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/protected-route"], 
+  matcher: ["/admin/:path*", "/protected-route"],
 };

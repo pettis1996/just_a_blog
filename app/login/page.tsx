@@ -15,7 +15,7 @@ export default function Login() {
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const { user, loading } = useUser();
-    
+
     useEffect(() => {
         if (user) {
             router.push("/admin");

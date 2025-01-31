@@ -31,7 +31,7 @@ export default function Profile() {
     if (loading) {
         return <>Loading...</>;
     }
-    
+
     return (
         <div className="space-y-6">
             <h2 className="text-3xl font-bold">My Profile</h2>
@@ -41,7 +41,7 @@ export default function Profile() {
                         <Image
                             src={userData?.image ?? "/avatar.svg"}
                             alt="User Avatar"
-                            width={100} 
+                            width={100}
                             height={100}
                             className="rounded-full shadow-md"
                         />

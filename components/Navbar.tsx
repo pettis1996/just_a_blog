@@ -49,7 +49,7 @@ export default function Navbar() {
                     <>
                         <Link href="/profile" className="hover:underline">Profile</Link>
                         <Link href="/admin" className="hover:underline">Admin Panel</Link>
-                        <button 
+                        <button
                             onClick={handleLogout}
                             className="text-red-600 hover:text-red-700 hover:underline"
                         >

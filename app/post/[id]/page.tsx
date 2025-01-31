@@ -154,7 +154,7 @@ export default function PostPage() {
                                         id="comment"
                                         name="comment"
                                         rows={4}
-                                        maxLength={500} 
+                                        maxLength={500}
                                         placeholder="Write something thoughtful..."
                                         className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
                                         required
@@ -190,7 +190,7 @@ export default function PostPage() {
                                         id="comment"
                                         name="comment"
                                         rows={4}
-                                        maxLength={500} 
+                                        maxLength={500}
                                         placeholder="Write something thoughtful..."
                                         className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
                                         required

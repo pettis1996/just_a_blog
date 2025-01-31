@@ -26,7 +26,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [session, setSession] = useState<Session | null>(null);
 
-    console.log(session?.email);   
+    console.log(session?.email);
 
     useEffect(() => {
         const fetchSession = async () => {

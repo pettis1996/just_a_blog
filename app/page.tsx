@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { supabase } from '@/lib/supabase'; 
+import { supabase } from '@/lib/supabase';
 
 type Post = { id: number, title: string, content: string, author: string, created_at: string, excerpt: string };
 
