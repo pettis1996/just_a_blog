@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import { useUser } from "@/providers/UserContext";
@@ -15,9 +14,8 @@ export default function Profile() {
     const [website, setWebsite] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
-    const { data: session } = useSession();
-    const [userData, setUserData] = useState(session?.user);
     const { user, loading } = useUser();
+    const [userData, setUserData] = useState(user ?? null);
 
     const handleSubmit = () => {
         return null;
@@ -37,17 +35,25 @@ export default function Profile() {
             <h2 className="text-3xl font-bold">My Profile</h2>
             <div className="space-y-4">
                 <Card>
-                    <CardContent className="py-10 flex gap-5 items-center">
-                        <Image
-                            src={userData?.image ?? "/avatar.svg"}
-                            alt="User Avatar"
-                            width={100}
-                            height={100}
-                            className="rounded-full shadow-md"
-                        />
-                        <div className="flex flex-col gap-5">
-                            <p className="text-2xl font-bold">{userData?.name}</p>
-                            <p className="text-xl font-medium">{userData?.email}</p>
+                    <CardContent className="flex gap-5 items-center justify-between">
+                        <div className="py-10 flex gap-5 items-center">
+                            <Image
+                                src={userData?.avatar_url ?? "/avatar.svg"}
+                                alt="User Avatar"
+                                width={150}
+                                height={150}
+                                className="rounded-full shadow-md"
+                            />
+                            <div className="flex flex-col gap-5">
+                                <p className="text-2xl font-bold">{userData?.name}</p>
+                                <p className="text-xl font-medium">{userData?.email}</p>
+                            </div>
+                        </div>
+                        <div className="py-10 flex gap-5 items-center me-5">
+                            <div className="flex flex-col gap-5">
+                                <p className="text-lg font-bold">Phone: {userData?.phone_num}</p>
+                                <p className="text-lg font-medium">Website: <a target="_blank" href={`https://${userData?.website}`}>{userData?.website}</a></p>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
