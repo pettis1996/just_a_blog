@@ -21,8 +21,6 @@ export default function AdminDashboard() {
     const router = useRouter();
     const { user, loading } = useUser();
 
-    console.log(user)
-
     useEffect(() => {
         const checkAuth = async () => {
             if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
@@ -31,7 +29,7 @@ export default function AdminDashboard() {
         };
 
         checkAuth();
-    }, [router]);
+    }, [user, router]);
 
     useEffect(() => {
         const fetchPosts = async () => {
