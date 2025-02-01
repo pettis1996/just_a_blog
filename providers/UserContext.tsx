@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { supabase } from "@/lib/supabase";
 
 type User = {
+    id: string;
     email: string;
     name: string;
     website?: string;
@@ -64,6 +65,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 setUser(null);
             } else {
                 setUser({
+                    id: userId,
                     email: userEmail,
                     name: data.nickname || "",
                     website: data.website || "",

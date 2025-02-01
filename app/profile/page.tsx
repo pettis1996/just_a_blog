@@ -25,11 +25,9 @@ export default function Profile() {
             nickname: username,
             phone_num: phoneNumber,
             website,
-            avatar_url: userData?.avatar_url,
-            userId: userData?.email,
+            avatar_url: avatarUrl,
+            userId: userData?.id,
         };
-
-        console.log(payload);
 
         try {
             const response = await fetch("/api/user", {

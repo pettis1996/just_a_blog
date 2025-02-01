@@ -13,8 +13,6 @@ export async function POST(req: NextRequest) {
         if (website) fieldsToUpdate.website = website;
         if (avatar_url) fieldsToUpdate.avatar_url = avatar_url;
 
-        console.log(fieldsToUpdate)
-
         if (Object.keys(fieldsToUpdate).length === 0) {
             return NextResponse.json(
                 { message: "No fields to update." },
