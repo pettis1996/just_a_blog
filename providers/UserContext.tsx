@@ -10,10 +10,6 @@ type User = {
     avatar_url?: string;
 };
 
-type Session = {
-    email: string;
-}
-
 interface UserContextType {
     user: User | null;
     loading: boolean;
@@ -24,16 +20,13 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const [session, setSession] = useState<Session | null>(null);
-
-    console.log(session?.email);
 
     useEffect(() => {
         const fetchSession = async () => {
             const { data: sessionData } = await supabase.auth.getSession();
             if (sessionData?.session?.user) {
-                await fetchUserData(sessionData.session.user.id);
-                setSession(sessionData?.session.user as Session);
+                const userEmail = sessionData.session.user.email || "";
+                await fetchUserData(sessionData.session.user.id, userEmail);
             } else {
                 setLoading(false);
             }
@@ -44,7 +37,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         const { data: authListener } = supabase.auth.onAuthStateChange(
             async (_event, session) => {
                 if (session?.user) {
-                    await fetchUserData(session.user.id);
+                    const userEmail = session.user.email || "";
+                    await fetchUserData(session.user.id, userEmail);
                 } else {
                     setUser(null);
                 }
@@ -57,7 +51,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         };
     }, []);
 
-    const fetchUserData = async (userId: string) => {
+    const fetchUserData = async (userId: string, userEmail: string) => {
         try {
             const { data, error } = await supabase
                 .from("users")
@@ -70,7 +64,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 setUser(null);
             } else {
                 setUser({
-                    email: session?.email || "",
+                    email: userEmail,
                     name: data.nickname || "",
                     website: data.website || "",
                     phone_num: data.phone_num || "",

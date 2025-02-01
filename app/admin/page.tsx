@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { useUser } from "@/providers/UserContext";
 
 export default function AdminDashboard() {
     const [title, setTitle] = useState("");
@@ -16,14 +16,15 @@ export default function AdminDashboard() {
     const [content, setContent] = useState("");
     const [author, setAuthor] = useState("");
     const [date, setDate] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [statsLoading, setStatsLoading] = useState(false);
     const [postData, setPostData] = useState([]);
     const router = useRouter();
+    const { user, loading } = useUser();
+
+    console.log(user)
 
     useEffect(() => {
         const checkAuth = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-
             if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
                 router.push("/");
             }
@@ -44,7 +45,7 @@ export default function AdminDashboard() {
 
                 setPostData(data);
             } finally {
-                setLoading(false);
+                setStatsLoading(false);
             }
         };
 
@@ -160,26 +161,30 @@ export default function AdminDashboard() {
                     </Card>
                 </TabsContent>
                 <TabsContent value="stats">
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <Card className="hover:bg-white hover:text-black hover:cursor-pointer">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">1,234</div>
-                                <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-                            </CardContent>
-                        </Card>
-                        <Card className="hover:bg-white hover:text-black hover:cursor-pointer">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">{postData.length}</div>
-                                <p className="text-xs text-muted-foreground">{postData.length} Total Posts on this blog so far...</p>
-                            </CardContent>
-                        </Card>
-                    </div>
+                    {!statsLoading ? (
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                            <Card className="hover:bg-white hover:text-black hover:cursor-pointer">
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold">1,234</div>
+                                    <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                                </CardContent>
+                            </Card>
+                            <Card className="hover:bg-white hover:text-black hover:cursor-pointer">
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold">{postData.length}</div>
+                                    <p className="text-xs text-muted-foreground">{postData.length} Total Posts on this blog so far...</p>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
                 </TabsContent>
             </Tabs>
         </div>
