@@ -14,6 +14,7 @@ type User = {
 interface UserContextType {
     user: User | null;
     loading: boolean;
+    refreshUser: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -80,8 +81,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const refreshUser = async () => {
+        if (user?.id) {
+          await fetchUserData(user.id, user.email);
+        }
+    };
+
     return (
-        <UserContext.Provider value={{ user, loading }}>
+        <UserContext.Provider value={{ user, loading, refreshUser }}>
             {children}
         </UserContext.Provider>
     );

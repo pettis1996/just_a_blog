@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import { useUser } from "@/providers/UserContext";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Profile() {
     const [username, setUsername] = useState("");
@@ -15,7 +16,7 @@ export default function Profile() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
-    const { user, loading } = useUser();
+    const { user, loading, refreshUser } = useUser();
     const [userData, setUserData] = useState(user ?? null);
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -42,8 +43,8 @@ export default function Profile() {
                 const error = await response.json();
                 console.error("Error updating user data:", error.message);
             } else {
-                const data = await response.json();
-                console.log("User data updated successfully:", data);
+                toast.success("User data updated successfully!");
+                refreshUser();
             }
         } catch (error) {
             console.error("Unexpected error:", error);
@@ -61,6 +62,7 @@ export default function Profile() {
 
     return (
         <div className="space-y-6">
+            <ToastContainer />
             <h2 className="text-3xl font-bold">My Profile</h2>
             <div className="space-y-4">
                 <Card>
